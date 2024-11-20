@@ -1,9 +1,9 @@
-package ca.gbc.productservices.controller;
+package ca.gbc.productservice.controller;
 
 
-import ca.gbc.productservices.dto.ProductRequest;
-import ca.gbc.productservices.dto.ProductResponse;
-import ca.gbc.productservices.service.ProductService;
+import ca.gbc.productservice.dto.ProductRequest;
+import ca.gbc.productservice.dto.ProductResponse;
+import ca.gbc.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class ProductController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> getAllProducts(){
+    public List<ProductResponse> getAllProducts() {
         return productService.getALLProducts();
     }
 
@@ -35,7 +35,7 @@ public class ProductController {
     @PutMapping
     //@ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> updateProduct(@PathVariable("productId") String productId,
-                                           @RequestBody ProductRequest productRequest){
+                                           @RequestBody ProductRequest productRequest) {
 
         String updatedProductId = productService.updateProduct(productId, productRequest);
 
@@ -47,12 +47,10 @@ public class ProductController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteProduct(@PathVariable("productId") String productId){
+    public ResponseEntity<?> deleteProduct(@PathVariable("productId") String productId) {
 
         productService.deleteProduct(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
 
 }
