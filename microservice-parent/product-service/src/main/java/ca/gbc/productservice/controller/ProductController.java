@@ -4,9 +4,11 @@ package ca.gbc.productservice.controller;
 import ca.gbc.productservice.dto.ProductRequest;
 import ca.gbc.productservice.dto.ProductResponse;
 import ca.gbc.productservice.service.ProductService;
+import ca.gbc.productservice.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +19,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody ProductRequest productRequest) {
-        productService.createProduct(productRequest);
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest) {
+
+        ProductResponse createdProduct = productService.createProduct(productRequest);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/api/product" + createdProduct.id());
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(createdProduct);
     }
 
     @GetMapping
@@ -32,7 +44,7 @@ public class ProductController {
     }
 
     //http://localhost:8080/api/product/exampel
-    @PutMapping
+    @PutMapping("/{productId}")
     //@ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> updateProduct(@PathVariable("productId") String productId,
                                            @RequestBody ProductRequest productRequest) {
@@ -46,7 +58,7 @@ public class ProductController {
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable("productId") String productId) {
 
         productService.deleteProduct(productId);
