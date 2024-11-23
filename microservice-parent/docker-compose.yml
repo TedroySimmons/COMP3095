@@ -10,6 +10,25 @@ version: '3.9'
 
 services:
 
+  inventory-service:
+    image: inventory-service
+    ports:
+      - "8082:8082"
+    build:
+      context: ./inventory-service
+      dockerfile: ./Dockerfile
+    container_name: inventory-service-prof
+    environment:
+      - SPRING_DATASOURCE_URL=jdc:postgresql:host.docker.internal:5434/inventory-service
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - postgres-inventory
+    networks:
+      - spring
+
   product-service:
     image: product-service
     ports:
